@@ -1,0 +1,28 @@
+{
+  "name": "scrappingscan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/OnePiece/index.js",
+    "db": "node dist/PushOnDb/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^22.15.3",
+    "@types/puppeteer": "^7.0.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "axios": "^1.9.0",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.5.0",
+    "puppeteer": "^24.7.2"
+  }
+}

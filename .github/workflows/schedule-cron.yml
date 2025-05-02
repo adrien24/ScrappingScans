@@ -1,0 +1,20 @@
+name: Schedule Supabase Edge Function
+
+on:
+  schedule:
+    - cron: '* * * * *' # Exécute toutes les heures
+  workflow_dispatch: # Permet d'exécuter manuellement aussi
+
+jobs:
+  call-function:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Invoke Supabase Edge Function
+        run: |
+          curl -X POST https://ajtyenefvkagyajggfrv.supabase.co/functions/v1/ma-fonction
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

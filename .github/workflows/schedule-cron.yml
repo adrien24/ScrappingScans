@@ -2,7 +2,7 @@ name: Schedule Supabase Edge Function
 
 on:
   schedule:
-    - cron: '*/5 * * * * *' # Exécute toutes les minutes
+    - cron: '* * * * *' # Exécute toutes les minutes
   workflow_dispatch: # Permet d'exécuter manuellement aussi
 
 jobs:

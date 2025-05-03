@@ -3,7 +3,6 @@
 enabled = true
 verify_jwt = true
 import_map = "./functions/ma-fonction/deno.json"
-schedule = "*/5 * * * *"  # toutes les 5 minutes (cron syntax)
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
 entrypoint = "./functions/ma-fonction/index.ts"

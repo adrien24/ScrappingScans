@@ -5,6 +5,7 @@ import { writeFile } from 'fs/promises'
 
 const goToChapter = async () => {
   const totalChapters = await countNumberOfChapters()
+
   const ListOfChapters: Array<{
     id: number
     title: string
@@ -12,8 +13,7 @@ const goToChapter = async () => {
     images: Array<string | null>
   }> = []
 
-  for (let i = 1; i <= totalChapters; i++) {
-    console.log(`Chapter: ${i}`)
+  for (let i = 1; i <= 5; i++) {
     const images = await scrapeImagesChapter(i)
     const informations = await titleOfChapter(i)
     ListOfChapters.push({

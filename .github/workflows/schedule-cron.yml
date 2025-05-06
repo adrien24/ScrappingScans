@@ -1,20 +1,28 @@
-name: Schedule Supabase Edge Function
+name: Scrape OnePiece Chapters
 
 on:
-  workflow_dispatch: # Permet d'exécuter manuellement aussi
-  # schedule:
-  #   - cron: '* * * * *' # Exécute toutes les minutes
+  schedule:
+    - cron: '0 4 * * *' # Tous les jours à 4h du matin UTC
+  workflow_dispatch: # Permet aussi de le lancer manuellement
 
 jobs:
-  call-function:
+  scrape:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
-      - name: Invoke Supabase Edge Function
+    steps:
+      - name: 🧾 Cloner le repo
+        uses: actions/checkout@v3
+
+      - name: 🟨 Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 📦 Installer les dépendances
+        run: npm install
+
+      - name: 🚀 Exécuter le script de scraping
         run: |
-          curl -X POST https://ajtyenefvkagyajggfrv.supabase.co/functions/v1/ma-fonction
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          cd src/Onepiece
+          ls
+          npx tsx index.ts

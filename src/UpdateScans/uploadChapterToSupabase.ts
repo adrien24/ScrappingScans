@@ -1,5 +1,6 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { DOMParser } from 'https://deno.land/x/deno_dom/deno-dom-wasm.ts'
+import { createClient } from '@supabase/supabase-js'
+import puppeteer from 'puppeteer'
+
 
 const supabaseUrl = 'https://ajtyenefvkagyajggfrv.supabase.co'
 const supabaseKey =
@@ -25,36 +26,37 @@ const uploadChapterToSupabase = async (chapters: any) => {
 }
 
 export const getChapters = async (chaptersNumber: number[]) => {
-  let imageLinks: string[] = []
+  let imageLinks: (string | null)[] = []
   await Promise.all(
     chaptersNumber.map(async (chapter) => {
-      const url = `https://onepiecescan.fr/manga/one-piece-scan-chapitre-${chapter}-vf/`
-      const res = await fetch(url)
-      const html = await res.text()
+      const browser = await puppeteer.launch({
+        headless: true,
+      })
+      const page = await browser.newPage()
+    
+      await page.goto('https://onepiecescan.fr/manga/one-piece-scan-chapitre-${chapter}-vf/', {
+        waitUntil: 'networkidle2',
+      })
 
-      const document: any = new DOMParser().parseFromString(html, 'text/html')
-      if (!document) {
-        console.error(`Impossible de parser le chapitre ${chapter}`)
-        return
-      }
+      await page.waitForSelector('img')
 
-      const imgElements = document.querySelectorAll('img') as NodeListOf<HTMLImageElement>
-      imageLinks = Array.from(imgElements)
-        .map((img) => img.getAttribute('data-src') || img.getAttribute('src'))
-        .filter((src): src is string => !!src)
-    })
+  imageLinks = await page.$$eval('img', (imgs) =>
+    imgs.map((img) => img.getAttribute('data-src') || img.getAttribute('src'))
   )
+  await browser.close()
+
+    }))
   await createJSON(imageLinks, chaptersNumber)
 }
 
-const createJSON = async (imageLinks: string[], chapter: number[]) => {
+const createJSON = async (imageLinks: (string | null)[], chapter: number[]) => {
   console.log(chapter)
 
   const jsonChapter: Array<{
     id: string
     title: string
     description: string
-    images: Array<string>
+    images: (string | null)[]
   }> = []
   await Promise.all(
     chapter.map(async (chapter) => {

@@ -6,8 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/OnePiece/index.js",
-    "db": "node dist/PushOnDb/index.js"
+    "start": "node dist/AddNewScans/OnePiece/index.js",
+    "db": "node dist/AddNewScans/PushOnDb/index.js",
+    "update": "node dist/UpdateScans/index.js",
+    "prettier": "prettier --write .",
+    "prettier-check": "prettier --check .",
+    "prettier-fix": "prettier --write ."
+    
   },
   "keywords": [],
   "author": "",
@@ -24,6 +29,7 @@
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
     "dotenv": "^16.5.0",
+    "prettier": "^3.5.3",
     "puppeteer": "^24.7.2"
   }
 }

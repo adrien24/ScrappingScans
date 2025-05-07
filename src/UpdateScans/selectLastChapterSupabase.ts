@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = 'https://ajtyenefvkagyajggfrv.supabase.co'
 const supabaseKey =
@@ -13,6 +13,6 @@ export const selectLastChapterSupabase = async () => {
     .order('id', { ascending: false })
     .limit(1)
     .single()
-
+  if(!OnePiece) return new Error('No data found')
   return OnePiece.id
 }

@@ -13,7 +13,7 @@ const goToChapter = async () => {
     images: Array<string | null>
   }> = []
 
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= totalChapters; i++) {
     const images = await scrapeImagesChapter(i)
     const informations = await titleOfChapter(i)
     ListOfChapters.push({
@@ -22,8 +22,12 @@ const goToChapter = async () => {
       description: informations.description,
       images,
     })
-    if (i % 1 === 0 || i === totalChapters) {
-      await writeFile('chapters1.json', JSON.stringify(ListOfChapters, null, 2), 'utf-8')
+
+    console.log('Chapters scraped : ' + i);
+    
+
+    if (i % 5 === 0) {
+      await writeFile('chapters.json', JSON.stringify(ListOfChapters, null, 2), 'utf-8')
       console.log(`Saved up to chapter ${i}`)
     }
   }

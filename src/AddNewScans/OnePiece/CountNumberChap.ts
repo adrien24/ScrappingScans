@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const { URL_ONEPIECE } = process.env;
@@ -15,7 +15,6 @@ export const countNumberOfChapters = async (): Promise<number> => {
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();
-
 
   await page.goto(URL_ONEPIECE, {
     waitUntil: "networkidle2",
@@ -35,4 +34,4 @@ export const countNumberOfChapters = async (): Promise<number> => {
   await browser.close();
 
   return toNumber;
-}
+};

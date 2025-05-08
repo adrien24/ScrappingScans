@@ -10,10 +10,11 @@ const updateOnePieceScans = async () => {
   console.log('Scrapping One Piece Started !')
   try {
     await connectUser()
-    const lastChapter = await selectLastChapter()
     console.log('scrapping time :', new Date().toLocaleTimeString())
     console.log('-----------------------------------')
-    const lastChapterSupabase = await selectLastChapterSupabase()    
+
+    const lastChapter = await selectLastChapter()
+    const lastChapterSupabase = await selectLastChapterSupabase()
 
     if (lastChapter > lastChapterSupabase) {
       const _chaptersNumber: number[] = []

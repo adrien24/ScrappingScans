@@ -8,11 +8,9 @@
     "build": "tsc",
     "start": "node dist/AddNewScans/OnePiece/index.js",
     "db": "node dist/AddNewScans/PushOnDb/index.js",
-    "update": "node dist/UpdateScans/index.js",
+    "update": "node dist/UpdateScans/OnePiece/index.js",
     "prettier": "prettier --write .",
-    "prettier-check": "prettier --check .",
-    "prettier-fix": "prettier --write ."
-    
+    "type-check": "echo \"tsc $(vue-tsc --version)\" && vue-tsc --build --force"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +20,8 @@
     "@types/node": "^22.15.3",
     "@types/puppeteer": "^7.0.4",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vue-tsc": "^2.2.10"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",

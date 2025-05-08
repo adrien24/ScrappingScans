@@ -2,7 +2,7 @@ name: Scrape OnePiece Chapters
 
 on:
   schedule:
-    - cron: '0 4 * * *' # Tous les jours à 4h du matin UTC
+    - cron: "0 4 * * *" # Tous les jours à 4h du matin UTC
   workflow_dispatch: # Permet aussi de le lancer manuellement
 
 jobs:

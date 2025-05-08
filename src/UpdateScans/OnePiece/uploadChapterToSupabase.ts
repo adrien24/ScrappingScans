@@ -2,9 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import puppeteer from 'puppeteer'
 
 const supabaseUrl = 'https://ajtyenefvkagyajggfrv.supabase.co'
-const supabaseKey =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqdHllbmVmdmthZ3lhamdnZnJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwMTgyNTgsImV4cCI6MjA2MTU5NDI1OH0.-nD9MrWPJ5PWiUZRIQs-vTqklTWGkKIbHeZcuLvlcFc'
-
+const supabaseKey = process.env.SUPABASE_KEY!
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const uploadChapterToSupabase = async (chapters: any) => {

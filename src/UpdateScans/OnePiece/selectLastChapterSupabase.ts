@@ -5,7 +5,7 @@ dotenv.config()
 
 const supabaseUrl = 'https://ajtyenefvkagyajggfrv.supabase.co'
 const supabaseKey = process.env.SUPABASE_KEY!
-console.log('supabaseKey', supabaseKey)
+
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 

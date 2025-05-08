@@ -1,4 +1,11 @@
 import puppeteer from 'puppeteer'
+import dotenv from 'dotenv';
+dotenv.config();
+
+const { URL_ONEPIECE } = process.env;
+if (!URL_ONEPIECE) {
+  throw new Error("URL_ONEPICE is not defined in the environment variables");
+}
 
 export const selectLastChapter = async (): Promise<number> => {
   try {
@@ -9,10 +16,11 @@ export const selectLastChapter = async (): Promise<number> => {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     })
     const page = await browser.newPage()
-
-    await page.goto('https://onepiecescan.fr/', {
-      waitUntil: 'networkidle2',
-    })
+   
+    await page.goto(URL_ONEPIECE, {
+      waitUntil: "networkidle2",
+    });
+    
     const firstChapter = await page.$eval('#All_chapters ul li ul li', (el) =>
       el.textContent?.trim(),
     )

@@ -1,6 +1,13 @@
 import puppeteer from "puppeteer";
+import dotenv from 'dotenv';
+dotenv.config();
 
-export async function countNumberOfChapters() {
+const { URL_ONEPIECE } = process.env;
+if (!URL_ONEPIECE) {
+  throw new Error("URL_ONEPICE is not defined in the environment variables");
+}
+
+export const countNumberOfChapters = async (): Promise<number> => {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath:
@@ -9,7 +16,8 @@ export async function countNumberOfChapters() {
   });
   const page = await browser.newPage();
 
-  await page.goto("https://onepiecescan.fr/", {
+
+  await page.goto(URL_ONEPIECE, {
     waitUntil: "networkidle2",
   });
 

@@ -5,6 +5,9 @@ import { selectLastChapterSupabase } from './selectLastChapterSupabase'
 import { getChapters } from './uploadChapterToSupabase'
 
 const updateOnePieceScans = async () => {
+  console.log('-----------------------------------')
+  console.log('Scrapping One Piece Started !')
+  console.log('-----------------------------------')
   try {
     const lastChapter = await selectLastChapter()
     const lastChapterSupabase = await selectLastChapterSupabase()
@@ -16,7 +19,10 @@ const updateOnePieceScans = async () => {
 
       }
       await getChapters(_chaptersNumber)
-    } else console.log(`All chapter is upload : ${lastChapterSupabase}`)
+    } else {
+      console.log(`All chapter is upload : ${lastChapterSupabase}`)
+      console.log('scrapping time:', new Date().toLocaleTimeString());
+      console.log('-----------------------------------')}
 
     if (!lastChapter) {
       return new Response('No chapter found: verify the DOM selector', { status: 404 })

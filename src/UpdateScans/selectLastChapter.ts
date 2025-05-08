@@ -1,8 +1,11 @@
 import puppeteer from 'puppeteer'
 
 export const selectLastChapter = async (): Promise<number> => {
+  try{
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath: '/home/hangover/.cache/puppeteer/chrome/linux-135.0.7049.114/chrome-linux64/chrome',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   })
   const page = await browser.newPage()
 
@@ -19,4 +22,8 @@ export const selectLastChapter = async (): Promise<number> => {
   await browser.close()
 
   return toNumber
+}catch(err){
+  console.log(err);
+  return 0
+}
 }

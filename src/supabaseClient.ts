@@ -22,5 +22,5 @@ const { data, error } = await supabase.auth.signInWithPassword({
   if (error) {
     console.error('Échec de la connexion :', error.message);
   } else {
-    console.log('Utilisateur connecté :', data.user);
+    console.log('Utilisateur connecté :', data.user.email);
   }}

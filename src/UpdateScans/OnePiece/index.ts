@@ -3,14 +3,17 @@
 import { selectLastChapter } from './selectLastChapter'
 import { selectLastChapterSupabase } from '../OnePiece/selectLastChapterSupabase'
 import { getChapters } from '../OnePiece/uploadChapterToSupabase'
+import { connectUser } from '../../supabaseClient'
 
 const updateOnePieceScans = async () => {
   console.log('-----------------------------------')
   console.log('Scrapping One Piece Started !')
+  console.log('scrapping time:', new Date().toLocaleTimeString())
   console.log('-----------------------------------')
   try {
+    await connectUser()
     const lastChapter = await selectLastChapter()
-    const lastChapterSupabase = await selectLastChapterSupabase()
+    const lastChapterSupabase = await selectLastChapterSupabase()    
 
     if (lastChapter > lastChapterSupabase) {
       const _chaptersNumber: number[] = []

@@ -1,13 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
 import dotenv from 'dotenv'
+import { supabase } from '../../supabaseClient'
 
 dotenv.config()
-
-const supabaseUrl = 'https://ajtyenefvkagyajggfrv.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY!
-
-
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 export const selectLastChapterSupabase = async () => {
   const { data: OnePiece } = await supabase

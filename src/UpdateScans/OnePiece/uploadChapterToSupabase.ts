@@ -1,12 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
 import puppeteer from 'puppeteer'
+import { supabase } from '../../supabaseClient'
 
-const supabaseUrl = 'https://ajtyenefvkagyajggfrv.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
 
 const uploadChapterToSupabase = async (chapters: any) => {
+  
   try {
+    
     const { data: ChaptersUpload, error } = await supabase
       .from('OnePiece')
       .insert(chapters)
@@ -20,7 +19,6 @@ const uploadChapterToSupabase = async (chapters: any) => {
       console.log('image length:', ChaptersUpload[0].images.length)
       console.log('first link image:', ChaptersUpload[0].images[0])
       console.log('title:', ChaptersUpload[0].title)
-      console.log('scrapping time:', new Date().toLocaleTimeString())
       console.log('Scrapping finished')
       console.log('-----------------------------------')
     }

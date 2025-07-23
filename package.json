@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/AddNewScans/OnePiece/index.js",
+    "onepiece": "node dist/AddNewScans/OnePiece/index.js",
+    "boruto": "node dist/AddNewScans/BorutoVortex/index.js",
     "db": "node dist/AddNewScans/PushOnDb/index.js",
     "update": "node dist/UpdateScans/OnePiece/index.js",
     "prettier": "prettier --write .",
@@ -28,6 +29,7 @@
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
     "dotenv": "^16.5.0",
+    "humanoid-js": "^1.0.1",
     "prettier": "^3.5.3",
     "puppeteer": "^24.7.2"
   }

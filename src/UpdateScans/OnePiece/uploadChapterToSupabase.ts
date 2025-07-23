@@ -28,7 +28,7 @@ export const getChapters = async (chaptersNumber: number[]) => {
   await Promise.all(
     chaptersNumber.map(async (chapter) => {
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       })
       const page = await browser.newPage()

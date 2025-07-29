@@ -20,7 +20,7 @@ async function autoScroll(page: any) {
 }
 
 export async function getScanImages(url: string): Promise<Array<string>> {
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
 
   await page.goto(url, {

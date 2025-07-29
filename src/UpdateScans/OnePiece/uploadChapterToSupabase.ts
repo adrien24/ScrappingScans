@@ -3,10 +3,7 @@ import { supabase } from '../../supabaseClient'
 
 const uploadChapterToSupabase = async (chapters: any) => {
   try {
-    const { data: ChaptersUpload, error } = await supabase
-      .from('OnePiece')
-      .insert(chapters)
-      .select()
+    const { data: ChaptersUpload, error } = await supabase.from('Scans').insert(chapters).select()
 
     if (error) {
       console.error('Error inserting data:', error)
@@ -51,7 +48,8 @@ export const getChapters = async (chaptersNumber: number[]) => {
 
 const createJSON = async (imageLinks: (string | null)[], chapter: number) => {
   const jsonChapter: Array<{
-    id: string
+    scan_id: string
+    chapter: string
     title: string
     description: string
     images: (string | null)[]
@@ -63,7 +61,8 @@ const createJSON = async (imageLinks: (string | null)[], chapter: number) => {
 
   if (res.status === 404) {
     jsonChapter.push({
-      id: chapter.toString(),
+      scan_id: 'One Piece',
+      chapter: chapter.toString(),
       title: 'Nom à venir',
       description: 'Description à venir',
       images: imageLinks,
@@ -78,7 +77,8 @@ const createJSON = async (imageLinks: (string | null)[], chapter: number) => {
 
   const json = await res.json()
   jsonChapter.push({
-    id: json.id,
+    scan_id: 'One Piece',
+    chapter: json.id,
     title: json.title,
     description: json.description,
     images: imageLinks,

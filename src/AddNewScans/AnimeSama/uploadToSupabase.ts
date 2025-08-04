@@ -13,8 +13,6 @@ export const postScansToSupabase = async (scan: Scan, id: string) => {
     },
   ]
 
-  console.log('scanFormatted:', scanFormatted)
-
   try {
     const { data, error } = await supabase.from('Scans').insert(scanFormatted).select()
 

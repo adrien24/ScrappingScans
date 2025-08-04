@@ -12,7 +12,7 @@ export interface Scan {
 }
 
 const scrapScans = async () => {
-  const url: string = 'https://anime-sama.fr/catalogue/wind-breaker-manga/scan/vf/'
+  const url: string = 'https://anime-sama.fr/catalogue/hunter-x-hunter/scan/vf/'
   const chapters: Scan[] = await getAllChapters(url)
 
   await connectUser()
@@ -29,8 +29,6 @@ const scrapScans = async () => {
   })
 
   for (const chapter of chapters) {
-    console.log(`Processing chapter: ${chapter.chapter} - ${chapter.title}`)
-
     try {
       const getScanImagesResult: any = await getScanImages(chapter.title, url)
       scansImages.push(...getScanImagesResult)

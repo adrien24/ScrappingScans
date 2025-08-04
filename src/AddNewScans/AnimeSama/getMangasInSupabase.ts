@@ -18,12 +18,12 @@ export const getMangasInSupabase = async (title: string) => {
   }
 }
 
-export const getAllMangasInSupabase = async () => {
+export const getAllMangasInSupabase = async (site: string) => {
   try {
     const { data: mangas, error } = await supabase
       .from('Mangas')
-      .select(`title, Scans (chapter), linkManga`)
-      .eq('site', 'lelmanga')
+      .select(`title, Scans (chapter), linkManga, site`)
+      .eq('site', site)
     if (error) {
       throw new Error(`Error fetching mangas: ${error.message}`)
     }

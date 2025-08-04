@@ -2,6 +2,8 @@ import puppeteer from 'puppeteer'
 import { supabase } from '../../supabaseClient'
 
 const uploadChapterToSupabase = async (chapters: any) => {
+  console.log('ChaptersUpload:', chapters)
+
   try {
     const { data: ChaptersUpload, error } = await supabase.from('Scans').insert(chapters).select()
 
@@ -25,7 +27,7 @@ export const getChapters = async (chaptersNumber: number[]) => {
   await Promise.all(
     chaptersNumber.map(async (chapter) => {
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       })
       const page = await browser.newPage()
@@ -53,6 +55,7 @@ const createJSON = async (imageLinks: (string | null)[], chapter: number) => {
     title: string
     description: string
     images: (string | null)[]
+    date: string
   }> = []
 
   const url = `https://api.api-onepiece.com/v2/chapters/fr/${chapter}`
@@ -66,6 +69,7 @@ const createJSON = async (imageLinks: (string | null)[], chapter: number) => {
       title: 'Nom à venir',
       description: 'Description à venir',
       images: imageLinks,
+      date: 'À venir',
     })
     await uploadChapterToSupabase(jsonChapter)
     return
@@ -82,6 +86,7 @@ const createJSON = async (imageLinks: (string | null)[], chapter: number) => {
     title: json.title,
     description: json.description,
     images: imageLinks,
+    date: '',
   })
 
   await uploadChapterToSupabase(jsonChapter)

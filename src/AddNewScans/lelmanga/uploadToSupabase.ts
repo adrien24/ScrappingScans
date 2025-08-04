@@ -9,7 +9,7 @@ export const postScansToSupabase = async (scan: Scan, id: string) => {
       title: scan.title,
       description: '',
       images: scan.images,
-      date: scan.date,
+      date: '',
     },
   ]
 

@@ -1,15 +1,16 @@
-import dotenv from "dotenv";
-import { supabase } from "../../supabaseClient";
+import dotenv from 'dotenv'
+import { supabase } from '../../supabaseClient'
 
-dotenv.config();
+dotenv.config()
 
 export const selectLastChapterSupabase = async () => {
   const { data: OnePiece } = await supabase
-    .from("OnePiece")
-    .select("id")
-    .order("id", { ascending: false })
+    .from('Scans')
+    .select('chapter')
+    .eq('scan_id', 'One Piece')
+    .order('chapter', { ascending: false })
     .limit(1)
-    .single();
-  if (!OnePiece) return new Error("No data found");
-  return OnePiece.id;
-};
+    .single()
+  if (!OnePiece) return new Error('No data found')
+  return OnePiece.chapter
+}

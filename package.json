@@ -10,9 +10,10 @@
     "lelmanga": "node dist/AddNewScans/lelmanga/index.js",
     "updateLelmanga": "node dist/UpdateScans/updateLelmanga/index.js",
     "updateAnimeSama": "node dist/UpdateScans/updateAnimeSama/index.js",
+    "update": "npm run updateAnimeSama && npm run updateLelmanga && npm run updateOnepiece",
     "animeSama": "node dist/AddNewScans/AnimeSama/index.js",
     "db": "node dist/AddNewScans/PushOnDb/index.js",
-    "update": "node dist/UpdateScans/OnePiece/index.js",
+    "updateOnepiece": "node dist/UpdateScans/OnePiece/index.js",
     "prettier": "prettier --write .",
     "type-check": "echo \"tsc $(vue-tsc --version)\" && vue-tsc --build --force"
   },

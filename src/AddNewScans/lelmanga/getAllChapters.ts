@@ -1,7 +1,8 @@
 import puppeteer from 'puppeteer'
 
 export async function getAllChapters(url: string = 'https://www.lelmanga.com/manga/kagura-bachi') {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: true,
+    executablePath: '/snap/bin/chromium' })
   const page = await browser.newPage()
 
   await page.goto(url, {

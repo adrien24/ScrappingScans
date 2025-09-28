@@ -28,6 +28,7 @@ export const getChapters = async (chaptersNumber: number[]) => {
     chaptersNumber.map(async (chapter) => {
       const browser = await puppeteer.launch({
         headless: true,
+      executablePath: '/snap/bin/chromium',
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       })
       const page = await browser.newPage()

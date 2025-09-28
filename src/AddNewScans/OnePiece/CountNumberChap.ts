@@ -10,8 +10,7 @@ if (!URL_ONEPIECE) {
 export const countNumberOfChapters = async (): Promise<number> => {
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath:
-      "/home/hangover/.cache/puppeteer/chrome/linux-135.0.7049.114/chrome-linux64/chrome",
+    executablePath: '/snap/bin/chromium',
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();

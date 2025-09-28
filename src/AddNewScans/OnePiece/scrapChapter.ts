@@ -1,7 +1,8 @@
 import puppeteer from 'puppeteer'
 
 export async function scrapeImagesChapter(numberOfChapter: number) {
-  const browser = await puppeteer.launch({ headless: true })
+  const browser = await puppeteer.launch({ headless: true,
+    executablePath: '/snap/bin/chromium' })
   const page = await browser.newPage()
 
   await page.goto(`https://onepiecescan.fr/manga/one-piece-scan-chapitre-${numberOfChapter}-vf/`, {

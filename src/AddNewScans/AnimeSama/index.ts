@@ -12,7 +12,7 @@ export interface Scan {
 }
 
 const scrapScans = async () => {
-  const url: string = 'https://anime-sama.fr/catalogue/hunter-x-hunter/scan/vf/'
+  const url: string = 'https://anime-sama.fr/catalogue/infinite-mage/scan/vf/'
   const chapters: Scan[] = await getAllChapters(url)
 
   await connectUser()

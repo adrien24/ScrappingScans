@@ -32,6 +32,7 @@ export async function getScanImages(chapterId: string, url: string): Promise<Arr
   const options = await page.$$eval('#selectChapitres option', (opts) =>
     opts.map((option) => option.textContent?.trim()),
   )
+
   if (!options) throw new Error('No options found in the select element')
   const chapterSelected = options.find((option) => option!.includes(chapterId))
 
@@ -45,8 +46,8 @@ export async function getScanImages(chapterId: string, url: string): Promise<Arr
   // Récupérer les vraies images (sans les SVG)
   const imageUrls = await page.$$eval('#scansPlacement img', (imgs) =>
     imgs
-      .map((img) => img.getAttribute('src'))
-      .filter((src) => src && src.includes('anime-sama.fr') && !src.includes('readerarea.svg')),
+      .map((img) => `https://anime-sama.fr${img.getAttribute('src')}`)
+      .filter((src) => src && !src.includes('readerarea.svg')),
   )
 
   await browser.close()

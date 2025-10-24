@@ -10,13 +10,14 @@ if (!URL_ONEPIECE) {
 export const countNumberOfChapters = async (): Promise<number> => {
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: '/snap/bin/chromium',
+   
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const page = await browser.newPage();
 
   await page.goto(URL_ONEPIECE, {
     waitUntil: "networkidle2",
+    timeout: 60000
   });
 
   await page.waitForSelector("#All_chapters ul li");

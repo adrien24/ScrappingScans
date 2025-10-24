@@ -21,11 +21,12 @@ async function autoScroll(page: any) {
 
 export async function getScanImages(url: string): Promise<Array<string>> {
   const browser = await puppeteer.launch({ headless: true,
-    executablePath: '/snap/bin/chromium' })
+     args: ['--no-sandbox', '--disable-setuid-sandbox'] })
   const page = await browser.newPage()
 
   await page.goto(url, {
     waitUntil: 'networkidle2',
+    timeout: 60000
   })
 
   // Scroll pour forcer le chargement des images lazy-loaded

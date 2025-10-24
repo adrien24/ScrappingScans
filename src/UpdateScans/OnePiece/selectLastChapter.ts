@@ -11,13 +11,14 @@ export const selectLastChapter = async (): Promise<number> => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: '/snap/bin/chromium',
+     
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     })
     const page = await browser.newPage()
 
     await page.goto('https://onepiecescan.fr/', {
       waitUntil: 'networkidle2',
+      timeout: 60000
     })
 
     const firstChapter = await page.$eval('#All_chapters ul li ul li', (el) =>

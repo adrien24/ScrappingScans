@@ -28,13 +28,14 @@ export const getChapters = async (chaptersNumber: number[]) => {
     chaptersNumber.map(async (chapter) => {
       const browser = await puppeteer.launch({
         headless: true,
-      executablePath: '/snap/bin/chromium',
+     
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       })
       const page = await browser.newPage()
 
       await page.goto(`https://onepiecescan.fr/manga/one-piece-scan-chapitre-${chapter}-vf/`, {
         waitUntil: 'networkidle2',
+        timeout: 60000
       })
 
       await page.waitForSelector('img')

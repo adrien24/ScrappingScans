@@ -20,8 +20,10 @@ async function autoScroll(page: any) {
 }
 
 export async function getScanImages(chapterId: string, url: string): Promise<Array<string>> {
-  const browser = await puppeteer.launch({ headless: true,
-     args: ['--no-sandbox', '--disable-setuid-sandbox'] })
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  })
   const page = await browser.newPage()
 
   await page.goto(url, {
@@ -48,7 +50,7 @@ export async function getScanImages(chapterId: string, url: string): Promise<Arr
   // Récupérer les vraies images (sans les SVG)
   const imageUrls = await page.$$eval('#scansPlacement img', (imgs) =>
     imgs
-      .map((img) => `https://anime-sama.fr${img.getAttribute('src')}`)
+      .map((img) => `https://anime-sama.org${img.getAttribute('src')}`)
       .filter((src) => src && !src.includes('readerarea.svg')),
   )
 

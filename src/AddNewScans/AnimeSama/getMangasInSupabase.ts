@@ -1,4 +1,5 @@
 import { supabase } from '../../supabaseClient'
+import { getMangaInMyAnimeList } from './getMangaInAnimeList'
 
 export const getMangasInSupabase = async (title: string) => {
   try {
@@ -39,7 +40,7 @@ export const getSelectedMangasInSupabase = async (title: string) => {
     const { data: manga } = await supabase.from('Mangas').select('*').eq('title', title)
     if (!manga) throw new Error(`Manga with title ${title} not found in Supabase`)
     return manga[0].title
-  } catch (error) {
-    throw new Error(`Error fetching mangas: ${error}`)
+  } catch (e) {
+    await getMangaInMyAnimeList(title)
   }
 }

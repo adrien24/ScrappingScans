@@ -1,5 +1,6 @@
 import { supabase } from '../../supabaseClient'
-import { getMangaInMyAnimeList } from './getMangaInAnimeList'
+import { getMangaInMyAnimeList, MALMangaSearchResponse } from './getMangaInAnimeList'
+import { addNewMangaToSupabase } from './uploadToSupabase'
 
 export const getMangasInSupabase = async (title: string) => {
   try {
@@ -41,6 +42,12 @@ export const getSelectedMangasInSupabase = async (title: string) => {
     if (!manga) throw new Error(`Manga with title ${title} not found in Supabase`)
     return manga[0].title
   } catch (e) {
-    await getMangaInMyAnimeList(title)
+    const mangaMyAnimeList: MALMangaSearchResponse | undefined = await getMangaInMyAnimeList(title)
+
+    if (!mangaMyAnimeList) {
+      throw new Error(`Manga with title ${title} not found in MyAnimeList either please add manualy`)
+    }
+
+    await addNewMangaToSupabase(mangaMyAnimeList, title)
   }
 }

@@ -7,12 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "onepiece": "node dist/AddNewScans/OnePiece/index.js",
-    "lelmanga": "node dist/AddNewScans/lelmanga/index.js",
     "updateLelmanga": "node dist/UpdateScans/updateLelmanga/index.js",
     "updateAnimeSama": "node dist/UpdateScans/updateAnimeSama/index.js",
-    "update": "npm run updateAnimeSama && npm run updateLelmanga && npm run updateOnepiece",
+    "update": "npm run updateAnimeSama",
     "animeSama": "node dist/AddNewScans/AnimeSama/index.js",
-    "db": "node dist/AddNewScans/PushOnDb/index.js",
     "updateOnepiece": "node dist/UpdateScans/OnePiece/index.js",
     "prettier": "prettier --write .",
     "type-check": "echo \"tsc $(vue-tsc --version)\" && vue-tsc --build --force"
@@ -33,6 +31,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
+    "@vitalets/google-translate-api": "^9.2.1",
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
     "dotenv": "^16.5.0",

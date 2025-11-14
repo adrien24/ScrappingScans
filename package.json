@@ -6,12 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "onepiece": "node dist/AddNewScans/OnePiece/index.js",
-    "updateLelmanga": "node dist/UpdateScans/updateLelmanga/index.js",
-    "updateAnimeSama": "node dist/UpdateScans/updateAnimeSama/index.js",
-    "update": "npm run updateAnimeSama",
-    "animeSama": "node dist/AddNewScans/AnimeSama/index.js",
-    "updateOnepiece": "node dist/UpdateScans/OnePiece/index.js",
+    "update": "tsx src/scripts/update-manga/updateAnimeSama.script.ts",
+    "addNewManga": "tsx src/scripts/add-manga/animeSama.script.ts",
     "prettier": "prettier --write .",
     "type-check": "echo \"tsc $(vue-tsc --version)\" && vue-tsc --build --force"
   },

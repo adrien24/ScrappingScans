@@ -2,6 +2,7 @@ import { prisma } from '../../../core/database/prisma.client'
 import { IScanRepository } from '../domain/manga.repository.interface'
 import { Scan } from '../../../shared/types'
 import { Logger } from '../../../shared/utils'
+import { Prisma } from '@prisma/client'
 
 const logger = new Logger('ScanRepositoryPrisma')
 
@@ -27,7 +28,7 @@ export class ScanRepositoryPrisma implements IScanRepository {
                 orderBy: { chapter: 'asc' },
             })
 
-            return scans.map((scan) => this.mapToScan(scan))
+            return scans.map((scan: Prisma.ScanGetPayload<{}>) => this.mapToScan(scan))
         } catch (error) {
             logger.error(`Error finding scans for manga: ${mangaId}`, error)
             throw error
@@ -74,7 +75,7 @@ export class ScanRepositoryPrisma implements IScanRepository {
     /**
      * Mapper les données Prisma vers l'entité Scan
      */
-    private mapToScan(data: any): Scan {
+    private mapToScan(data: Prisma.ScanGetPayload<{}>): Scan {
         return {
             id: data.id,
             scanId: data.scanId,

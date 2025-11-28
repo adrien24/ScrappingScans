@@ -2,6 +2,7 @@ import { prisma } from '../../../core/database/prisma.client'
 import { IMangaRepository } from '../domain/manga.repository.interface'
 import { Manga, MangaWithScans, SiteSource } from '../../../shared/types'
 import { Logger } from '../../../shared/utils'
+import { Prisma } from '@prisma/client'
 
 const logger = new Logger('MangaRepositoryPrisma')
 
@@ -46,7 +47,7 @@ export class MangaRepositoryPrisma implements IMangaRepository {
                 },
             })
 
-            return mangas.map((manga) => this.mapToMangaWithScans(manga))
+            return mangas.map((manga: Prisma.MangaGetPayload<{ include: { scans: true } }>) => this.mapToMangaWithScans(manga))
         } catch (error) {
             logger.error(`Error finding mangas by site: ${site}`, error)
             throw error
@@ -117,7 +118,7 @@ export class MangaRepositoryPrisma implements IMangaRepository {
     /**
      * Mapper les données Prisma vers l'entité Manga
      */
-    private mapToManga(data: any): Manga {
+    private mapToManga(data: Prisma.MangaGetPayload<{}>): Manga {
         return {
             id: data.id,
             title: data.title,
@@ -139,10 +140,10 @@ export class MangaRepositoryPrisma implements IMangaRepository {
     /**
      * Mapper les données Prisma vers MangaWithScans
      */
-    private mapToMangaWithScans(data: any): MangaWithScans {
+    private mapToMangaWithScans(data: Prisma.MangaGetPayload<{ include: { scans: true } }>): MangaWithScans {
         return {
             ...this.mapToManga(data),
-            scans: data.scans?.map((scan: any) => ({
+            scans: data.scans?.map((scan: Prisma.ScanGetPayload<{}>) => ({
                 id: scan.id,
                 scanId: scan.scanId,
                 chapter: scan.chapter,

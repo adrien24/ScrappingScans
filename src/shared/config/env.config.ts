@@ -8,10 +8,10 @@ dotenv.config()
 export const config = {
     // Database
     supabase: {
-        url: process.env.SUPABASE_URL!,
-        key: process.env.SUPABASE_KEY!,
-        email: process.env.SUPABASE_EMAIL!,
-        password: process.env.SUPABASE_PASSWORD!,
+        url: process.env.SUPABASE_URL || '',
+        key: process.env.SUPABASE_KEY || '',
+        email: process.env.SUPABASE_EMAIL || '',
+        password: process.env.SUPABASE_PASSWORD || '',
     },
 
     // External APIs
@@ -41,19 +41,10 @@ export const config = {
 } as const
 
 /**
- * Validation de la configuration au démarrage
+ * Validation de la configuration au démarrage (Supabase optionnel maintenant)
  */
 export function validateConfig(): void {
-    const required = [
-        'SUPABASE_URL',
-        'SUPABASE_KEY',
-        'SUPABASE_EMAIL',
-        'SUPABASE_PASSWORD',
-    ]
-
-    const missing = required.filter((key) => !process.env[key])
-
-    if (missing.length > 0) {
-        throw new Error(`Missing required environment variables: ${missing.join(', ')}`)
-    }
+    // Supabase n'est plus requis si on utilise Prisma
+    // Les variables MAL peuvent être optionnelles selon l'utilisation
+    return
 }

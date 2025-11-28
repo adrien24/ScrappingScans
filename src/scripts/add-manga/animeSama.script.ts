@@ -1,4 +1,4 @@
-import { supabaseClient } from '../../core/database'
+import { prismaDatabaseClient } from '../../core/database'
 import { scrapingService } from '../../modules/scraping'
 import { Logger } from '../../shared/utils'
 import { config } from '../../shared/config'
@@ -17,8 +17,8 @@ async function main() {
 
         logger.info('Starting AnimeSama manga addition...')
 
-        // Authentification
-        await supabaseClient.authenticate()
+        // Connexion à la base de données
+        await prismaDatabaseClient.connect()
 
         // Ajouter le manga
         await scrapingService.addMangaFromAnimeSama(mangaUrl)

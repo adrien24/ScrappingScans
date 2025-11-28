@@ -17,6 +17,7 @@ export interface ScrapingResult<T> {
 
 export interface PuppeteerConfig {
     headless: boolean
+    executablePath?: string
     args: string[]
 }
 

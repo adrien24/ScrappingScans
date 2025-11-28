@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Manga {
+  id          String   @id @default(uuid())
+  title       String   @unique
+  description String   @db.Text
+  thumbnails  String
+  color       String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  site        String
+  linkManga   String   @map("link_manga")
+  mean        Float    @default(0)
+  mediaType   String   @map("media_type")
+  status      String
+  genres      Json     @default("[]")
+  authors     Json     @default("[]")
+  
+  scans       Scan[]
+
+  @@map("Mangas")
+}
+
+model Scan {
+  id          Int      @id @default(autoincrement())
+  scanId      String   @map("scan_id")
+  chapter     Float?
+  title       String
+  description String   @default("") @db.Text
+  images      Json     @default("[]")
+  date        String   @default("")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  manga       Manga    @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  @@map("Scans")
+  @@index([scanId])
+  @@index([chapter])
+}

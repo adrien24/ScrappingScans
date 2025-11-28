@@ -1,8 +1,13 @@
-import puppeteer, { Browser, Page } from 'puppeteer'
+import puppeteer from 'puppeteer-extra'
+import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+import { Browser, Page } from 'puppeteer'
 import { ScrapedChapter } from '../../../shared/types'
 import { Logger } from '../../../shared/utils'
 import { config, puppeteerConfig, configurePage } from '../../../shared/config'
 import { REGEX_PATTERNS, TIMEOUTS } from '../../../shared/constants'
+
+// Utiliser le plugin stealth pour éviter la détection Cloudflare
+puppeteer.use(StealthPlugin())
 
 const logger = new Logger('AnimeSamaScraper')
 
@@ -33,11 +38,15 @@ export class AnimeSamaScraper {
         try {
             await configurePage(page, config.scraping.userAgent)
             await page.goto(url, {
-                waitUntil: 'networkidle2',
-                timeout: TIMEOUTS.NAVIGATION,
+                waitUntil: 'domcontentloaded',
+                timeout: 60000,
             })
 
-            await page.waitForSelector('#titreOeuvre')
+            // Attendre que Cloudflare valide la requête
+            logger.info('Waiting for Cloudflare validation...')
+            await new Promise(resolve => setTimeout(resolve, 5000))
+
+            await page.waitForSelector('#titreOeuvre', { timeout: 30000 })
 
             const title = await page.$eval('#titreOeuvre', (h1) => h1.textContent?.trim())
 
@@ -108,11 +117,15 @@ export class AnimeSamaScraper {
         try {
             await configurePage(page, config.scraping.userAgent)
             await page.goto(url, {
-                waitUntil: 'networkidle2',
-                timeout: TIMEOUTS.NAVIGATION,
+                waitUntil: 'domcontentloaded',
+                timeout: 60000,
             })
 
-            await page.waitForSelector('#selectChapitres')
+            // Attendre que Cloudflare valide la requête
+            logger.info('Waiting for Cloudflare validation...')
+            await new Promise(resolve => setTimeout(resolve, 5000))
+
+            await page.waitForSelector('#selectChapitres', { timeout: 30000 })
 
             const options = await page.$$eval('#selectChapitres option', (opts) =>
                 opts.map((option) => option.textContent?.trim()),

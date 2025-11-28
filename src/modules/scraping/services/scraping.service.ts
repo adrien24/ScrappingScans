@@ -37,7 +37,7 @@ export class ScrapingService {
             const mangaTitle = chapters[0].scanId
 
             // 2. S'assurer que le manga existe (créer si nécessaire depuis MAL)
-            await mangaService.ensureMangaExists(mangaTitle, mangaUrl, SiteSource.ANIME_SAMA)
+            const manga = await mangaService.ensureMangaExists(mangaTitle, mangaUrl, SiteSource.ANIME_SAMA)
 
             // 3. Trier les chapitres par numéro
             const sortedChapters = chapters.sort((a, b) => {
@@ -56,14 +56,14 @@ export class ScrapingService {
 
                     // Créer le scan
                     const scanData: CreateScanDTO = {
-                        scanId: mangaTitle,
+                        scanId: manga.id!,
                         chapter: chapter.chapter,
                         title: chapter.title,
                         description: '',
                         images,
                     }
 
-                    await mangaService.addScan(mangaTitle, scanData)
+                    await mangaService.addScan(manga.id!, scanData)
                 } catch (error) {
                     logger.error(`Failed to process chapter ${chapter.chapter}`, error)
                     // Continue avec le chapitre suivant
@@ -85,11 +85,17 @@ export class ScrapingService {
         logger.info(`Updating manga: ${mangaTitle}`)
 
         try {
-            // 1. Scraper tous les chapitres disponibles
+            // 1. Récupérer le manga pour avoir son ID
+            const manga = await mangaService.getMangaByTitle(mangaTitle)
+            if (!manga) {
+                throw new Error(`Manga not found: ${mangaTitle}`)
+            }
+
+            // 2. Scraper tous les chapitres disponibles
             const scrapedChapters = await animeSamaScraper.scrapeChapters(mangaUrl)
 
-            // 2. Trouver les nouveaux chapitres
-            const newChapterNumbers = await mangaService.findNewChapters(mangaTitle, scrapedChapters)
+            // 3. Trouver les nouveaux chapitres
+            const newChapterNumbers = await mangaService.findNewChapters(manga.id!, scrapedChapters)
 
             if (newChapterNumbers.length === 0) {
                 logger.info(`✓ No new chapters for ${mangaTitle}`)
@@ -98,12 +104,12 @@ export class ScrapingService {
 
             logger.info(`📚 Found ${newChapterNumbers.length} new chapter(s)`)
 
-            // 3. Filtrer les chapitres scrapés pour ne garder que les nouveaux
+            // 4. Filtrer les chapitres scrapés pour ne garder que les nouveaux
             const newChapters = scrapedChapters.filter((ch) =>
                 newChapterNumbers.includes(ch.chapter as number),
             )
 
-            // 4. Ajouter les nouveaux chapitres
+            // 5. Ajouter les nouveaux chapitres
             for (const chapter of newChapters) {
                 try {
                     logger.info(`  → Processing chapter ${chapter.chapter}: ${chapter.title}`)
@@ -111,14 +117,14 @@ export class ScrapingService {
                     const images = await animeSamaScraper.scrapeChapterImages(chapter.title, mangaUrl)
 
                     const scanData: CreateScanDTO = {
-                        scanId: mangaTitle,
+                        scanId: manga.id!,
                         chapter: chapter.chapter,
                         title: chapter.title,
                         description: '',
                         images,
                     }
 
-                    await mangaService.addScan(mangaTitle, scanData)
+                    await mangaService.addScan(manga.id!, scanData)
                 } catch (error) {
                     logger.error(`Failed to process chapter ${chapter.chapter}`, error)
                     continue

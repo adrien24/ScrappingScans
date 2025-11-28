@@ -1,5 +1,5 @@
-import { mangaRepository } from '../repositories/manga.repository'
-import { scanRepository } from '../repositories/scan.repository'
+import { mangaRepositoryPrisma as mangaRepository } from '../repositories/manga.repository.prisma'
+import { scanRepositoryPrisma as scanRepository } from '../repositories/scan.repository.prisma'
 import { malClient } from '../../../core/external-apis'
 import {
     Manga,
@@ -125,11 +125,11 @@ export class MangaService {
     /**
      * Ajouter un scan à un manga
      */
-    async addScan(mangaTitle: string, scanData: CreateScanDTO): Promise<Scan> {
+    async addScan(mangaId: string, scanData: CreateScanDTO): Promise<Scan> {
         logger.info(`Adding scan: Chapter ${scanData.chapter} - ${scanData.title}`)
 
         const scan: Partial<Scan> = {
-            scanId: mangaTitle,
+            scanId: mangaId,
             chapter: scanData.chapter,
             title: scanData.title,
             description: scanData.description || '',
@@ -143,18 +143,18 @@ export class MangaService {
     /**
      * Obtenir les scans d'un manga
      */
-    async getMangaScans(mangaTitle: string): Promise<Scan[]> {
-        return scanRepository.findByMangaId(mangaTitle)
+    async getMangaScans(mangaId: string): Promise<Scan[]> {
+        return scanRepository.findByMangaId(mangaId)
     }
 
     /**
      * Trouver les nouveaux chapitres à ajouter
      */
     async findNewChapters(
-        mangaTitle: string,
+        mangaId: string,
         scrapedChapters: Array<{ chapter: number | null }>,
     ): Promise<number[]> {
-        const existingScans = await this.getMangaScans(mangaTitle)
+        const existingScans = await this.getMangaScans(mangaId)
         const existingChapters = existingScans.map((scan) => scan.chapter).filter((ch) => ch !== null)
 
         const newChapters = scrapedChapters

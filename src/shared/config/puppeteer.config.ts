@@ -5,12 +5,15 @@ import { PuppeteerConfig } from '../types'
  */
 export const puppeteerConfig: PuppeteerConfig = {
     headless: true,
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-blink-features=AutomationControlled',
         '--disable-web-security',
         '--disable-features=IsolateOrigins,site-per-process',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
     ],
 }
 

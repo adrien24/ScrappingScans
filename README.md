@@ -72,24 +72,91 @@ POST /api/mangas/:title/scans  # Ajouter un scan
 ### Scraping
 
 ```bash
-POST /api/scraping/add-manga    # Scraper un nouveau manga
-POST /api/scraping/update-manga # Mettre à jour un manga
+POST /api/scraping/add-manga      # Scraper un nouveau manga
+POST /api/scraping/update-manga   # Mettre à jour un manga
+POST /api/scraping/update-all     # Mettre à jour tous les mangas
 ```
 
-**Exemple :**
+**Exemple - Ajouter un manga :**
 
 ```bash
-curl -X POST http://localhost:3000/api/scraping/add-manga \
+curl -X POST https://api.adrienbouteiller.fr/api/scraping/add-manga \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://anime-sama.org/catalogue/kagura-bachi/scan/vf.html"}'
+  -d '{
+    "url": "https://anime-sama.eu/catalogue/haikyuu/scan/vf/",
+    "site": "ANIME_SAMA"
+  }'
+```
+
+**Réponse :**
+```json
+{
+  "message": "Manga scraping started",
+  "url": "https://anime-sama.eu/catalogue/haikyuu/scan/vf/"
+}
+```
+
+> ⚠️ Le scraping est **asynchrone**. L'API retourne immédiatement (202 Accepted) et le scraping continue en arrière-plan.
+
+**Gérer le scraping en cours :**
+
+```bash
+# Voir les logs en temps réel (mode direct/suivi)
+pm2 logs scrappingscan-api
+
+# Voir les dernières lignes sans suivre
+pm2 logs scrappingscan-api --lines 50 --nostream
+
+# Filtrer les logs (erreurs uniquement)
+pm2 logs scrappingscan-api --err
+
+# Vider les logs
+pm2 flush scrappingscan-api
+
+# Arrêter le scraping en cours (redémarre l'app)
+pm2 restart scrappingscan-api
+
+# Stopper complètement l'app
+pm2 stop scrappingscan-api
+
+# Redémarrer l'app
+pm2 start scrappingscan-api
+
+# Voir l'état et la consommation
+pm2 status
+pm2 monit  # Interface interactive avec CPU/RAM
+```
+
+**Suivre le scraping en direct :**
+
+```bash
+# Ouvrir les logs en temps réel dans un terminal
+pm2 logs scrappingscan-api
+
+# Vous verrez défiler :
+# [AnimeSamaScraper] ℹ️  Scraping chapters from: https://...
+# [AnimeSamaScraper] ✅ Found 409 chapters
+# [ScrapingService] ℹ️  Processing chapter 1: Chapitre 1
+# [AnimeSamaScraper] ℹ️  Scraping images for chapter: Chapitre 1
+# [AnimeSamaScraper] ✅ Found 19 images
+# [ScanRepositoryPrisma] ✅ Scan created: Chapter 1 - Chapitre 1
+
+# Pour quitter : Ctrl+C
 ```
 
 ---
 
 ## 📚 Documentation
 
+- **[API Documentation (Swagger)](https://api.adrienbouteiller.fr/api-docs/)** - Documentation interactive des endpoints
 - **[docs/QUICK_START.md](./docs/QUICK_START.md)** - Installation PostgreSQL + Workflow de développement
 - **[docs/DEPLOYMENT_SIMPLE.md](./docs/DEPLOYMENT_SIMPLE.md)** - Guide de déploiement production
+
+### API en Production
+
+🌐 **Production** : https://api.adrienbouteiller.fr  
+📖 **Swagger UI** : https://api.adrienbouteiller.fr/api-docs/  
+✅ **Health Check** : https://api.adrienbouteiller.fr/health
 
 ---
 
@@ -162,18 +229,68 @@ ScrappingScan/
 
 ### Scraping et Cloudflare
 
-Le site anime-sama.org utilise **Cloudflare**. Le scraping peut :
+Le site anime-sama.eu utilise **Cloudflare**. Le scraping peut :
 
-- Prendre du temps (validation Cloudflare)
-- Échouer si bloqué par l'anti-bot
-- Nécessiter plusieurs tentatives
+- ⏱️ Prendre du temps (validation Cloudflare, ~5-10s par chapitre)
+- ❌ Échouer si bloqué par l'anti-bot
+- 🔄 Nécessiter plusieurs tentatives
+- 🚫 Être bloqué en production (voir solutions ci-dessous)
+
+**Le scraping est asynchrone** : L'endpoint retourne immédiatement (202 Accepted) et continue en arrière-plan.
+
+**Solutions pour la production :**
+1. **Scraper en local** et synchroniser la base de données vers la production
+2. **Serveur dédié** uniquement pour le scraping
+3. **Services externes** (ScraperAPI, Bright Data, etc.)
+
+### Arrêter un scraping en cours
+
+Le scraping s'exécute en tâche de fond. Pour l'arrêter ou le surveiller :
+
+```bash
+# 🔴 Voir les logs en TEMPS RÉEL (Ctrl+C pour quitter)
+pm2 logs scrappingscan-api
+
+# 📊 Interface monitoring interactive (CPU/RAM)
+pm2 monit
+
+# 📝 Voir les dernières lignes sans suivre
+pm2 logs scrappingscan-api --lines 100 --nostream
+
+# 🔄 Redémarrer l'application (interrompt le scraping)
+pm2 restart scrappingscan-api
+
+# 🛑 Stopper complètement
+pm2 stop scrappingscan-api
+
+# ✅ Redémarrer après un stop
+pm2 start scrappingscan-api
+
+# 📈 Voir l'état et les stats
+pm2 status
+```
+
+**Exemple de logs en direct :**
+
+```
+[AnimeSamaScraper] ℹ️  Scraping chapters from: https://anime-sama.eu/...
+[AnimeSamaScraper] ✅ Found 409 chapters
+[ScrapingService] ℹ️  Processing chapter 1: Chapitre 1
+[AnimeSamaScraper] ℹ️  Scraping images for chapter: Chapitre 1
+[AnimeSamaScraper] ✅ Found 19 images
+[ScanRepositoryPrisma] ✅ Scan created: Chapter 1 - Chapitre 1
+[ScrapingService] ℹ️  Processing chapter 2: Chapitre 2
+...
+```
 
 ### Performances
 
 Puppeteer consomme beaucoup de RAM :
 
+- **Minimum 2GB RAM** recommandé
 - Ne pas exécuter trop de scraping simultanés
-- Fermer le navigateur après chaque scraping
+- Le navigateur se ferme automatiquement après chaque scraping
+- Un manga de 400+ chapitres peut prendre plusieurs heures
 
 ---
 

@@ -146,7 +146,7 @@ export class AnimeSamaScraper {
 
             const imageUrls = await page.$$eval('#scansPlacement img', (imgs) =>
                 imgs
-                    .map((img) => `https://anime-sama.org${img.getAttribute('src')}`)
+                    .map((img) => `${img.getAttribute('src')}`)
                     .filter((src) => src && !src.includes('readerarea.svg')),
             )
 

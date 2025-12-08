@@ -2,9 +2,11 @@ import express, { Application, Request, Response } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import compression from 'compression'
+import swaggerUi from 'swagger-ui-express'
 import { config } from './shared/config'
 import { prismaDatabaseClient } from './core/database/prisma.client'
 import { Logger } from './shared/utils'
+import { swaggerSpec } from './shared/config/swagger.config'
 import mangaRoutes from './api/routes/manga.routes'
 import scrapingRoutes from './api/routes/scraping.routes'
 
@@ -25,8 +27,12 @@ class Server {
      * Configurer les middlewares
      */
     private setupMiddlewares(): void {
-        // Sécurité
-        this.app.use(helmet())
+        // Sécurité (désactiver CSP pour Swagger UI)
+        this.app.use(
+            helmet({
+                contentSecurityPolicy: false,
+            })
+        )
 
         // CORS
         this.app.use(
@@ -54,6 +60,12 @@ class Server {
      * Configurer les routes
      */
     private setupRoutes(): void {
+        // Swagger documentation
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+            customCss: '.swagger-ui .topbar { display: none }',
+            customSiteTitle: 'ScrappingScan API Documentation',
+        }))
+
         // Health check
         this.app.get('/health', (req: Request, res: Response) => {
             res.json({

@@ -82,7 +82,7 @@ export class ScanRepositoryPrisma implements IScanRepository {
             chapter: data.chapter,
             title: data.title,
             description: data.description,
-            images: Array.isArray(data.images) ? data.images : JSON.parse(data.images || '[]'),
+            images: Array.isArray(data.images) ? data.images as string[] : JSON.parse(String(data.images || '[]')),
             date: data.date,
             createdAt: data.createdAt.toISOString(),
         }

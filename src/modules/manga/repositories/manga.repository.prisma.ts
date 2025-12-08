@@ -130,10 +130,10 @@ export class MangaRepositoryPrisma implements IMangaRepository {
             site: data.site as SiteSource,
             linkManga: data.linkManga,
             mean: data.mean,
-            mediaType: data.mediaType,
-            status: data.status,
-            genres: Array.isArray(data.genres) ? data.genres : JSON.parse(data.genres || '[]'),
-            authors: Array.isArray(data.authors) ? data.authors : JSON.parse(data.authors || '[]'),
+            mediaType: data.mediaType as any,
+            status: data.status as any,
+            genres: Array.isArray(data.genres) ? data.genres as string[] : JSON.parse(String(data.genres || '[]')),
+            authors: Array.isArray(data.authors) ? data.authors as string[] : JSON.parse(String(data.authors || '[]')),
         }
     }
 
@@ -149,7 +149,7 @@ export class MangaRepositoryPrisma implements IMangaRepository {
                 chapter: scan.chapter,
                 title: scan.title,
                 description: scan.description,
-                images: Array.isArray(scan.images) ? scan.images : JSON.parse(scan.images || '[]'),
+                images: Array.isArray(scan.images) ? scan.images as string[] : JSON.parse(String(scan.images || '[]')),
                 date: scan.date,
                 createdAt: scan.createdAt.toISOString(),
             })) || [],

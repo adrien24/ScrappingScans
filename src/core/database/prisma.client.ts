@@ -14,9 +14,17 @@ class PrismaDatabaseClient {
     private pool: Pool
 
     private constructor() {
-        // Créer le pool de connexion PostgreSQL
+        // Log the DATABASE_URL for debugging (mask password)
+        const dbUrl = process.env.DATABASE_URL || ''
+        logger.info(`Database URL: ${dbUrl.replace(/:[^:@]*@/, ':****@')}`)
+        
+        // Créer le pool de connexion PostgreSQL avec paramètres explicites
         this.pool = new Pool({
-            connectionString: process.env.DATABASE_URL,
+            host: 'localhost',
+            port: 5432,
+            user: 'scrappingscan',
+            password: 'scrappingscan_password',
+            database: 'scrappingscan',
         })
 
         // Créer l'adaptateur Prisma avec le pool

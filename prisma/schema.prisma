@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -48,3 +47,4 @@ model Scan {
   @@index([scanId])
   @@index([chapter])
 }
+// Force refresh

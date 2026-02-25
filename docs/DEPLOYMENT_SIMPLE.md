@@ -27,8 +27,8 @@ brew services start postgresql@16
 
 # 2. Créer la base de données
 sudo -u postgres psql -c "CREATE DATABASE scrappingscan;"
-sudo -u postgres psql -c "CREATE USER scrappingscan WITH PASSWORD 'votre_password_securise';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE scrappingscan TO scrappingscan;"
+sudo -u postgres psql -c "CREATE USER admin WITH PASSWORD 'MaisonAdrien136++';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE scrappingscan TO admin;"
 
 # 3. Cloner le projet
 git clone https://github.com/votre-repo/ScrappingScan.git

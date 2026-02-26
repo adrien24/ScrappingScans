@@ -16,15 +16,12 @@ class PrismaDatabaseClient {
     private constructor() {
         // Log the DATABASE_URL for debugging (mask password)
         const dbUrl = process.env.DATABASE_URL || ''
+        if (!dbUrl) throw new Error('DATABASE_URL is not set in environment variables')
         logger.info(`Database URL: ${dbUrl.replace(/:[^:@]*@/, ':****@')}`)
-        
-        // Créer le pool de connexion PostgreSQL avec paramètres explicites
+
+        // Créer le pool de connexion PostgreSQL depuis DATABASE_URL
         this.pool = new Pool({
-            host: 'localhost',
-            port: 5432,
-            user: 'scrappingscan',
-            password: 'scrappingscan_password',
-            database: 'scrappingscan',
+            connectionString: dbUrl,
         })
 
         // Créer l'adaptateur Prisma avec le pool

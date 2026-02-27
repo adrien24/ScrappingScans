@@ -104,6 +104,27 @@ export class ScrapingController {
             res.status(500).json({ error: 'Internal server error' })
         }
     }
+
+    async scrapAllMangasTitles(req: Request, res: Response): Promise<void> {
+        try {
+            // Lancer le scraping en arrière-plan
+            scrapingService
+                .scrapAllMangasTitlesFromAnimeSama()
+                .then(() => {
+                    logger.success('All manga titles scraped successfully')
+                })
+                .catch((error: string) => {
+                    logger.error('Failed to start scraping of all manga titles', error)
+                })
+
+            res.status(202).json({
+                message: 'Scraping of all manga titles from AnimeSama started',
+            })
+        } catch (error) {
+            logger.error('Error starting scraping of all manga titles', error)
+            res.status(500).json({ error: 'Internal server error' })
+        }
+    }
 }
 
 export const scrapingController = new ScrapingController()

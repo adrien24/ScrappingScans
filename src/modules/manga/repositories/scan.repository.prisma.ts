@@ -61,7 +61,7 @@ export class ScanRepositoryPrisma implements IScanRepository {
       const created = await prisma.scan.create({
         data: {
           scanId: scan.scanId!,
-          chapter: scan.chapter || null,
+          chapter: scan.chapter ?? null,
           title: scan.title!,
           description: scan.description || "",
           images: (scan.images || []) as any,

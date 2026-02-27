@@ -164,7 +164,7 @@ export class MangaController {
       const { title } = req.params;
       const scanData = req.body;
 
-      if (!scanData.chapter || !scanData.title || !scanData.images) {
+      if (scanData.chapter === undefined || scanData.chapter === null || !scanData.title || !scanData.images) {
         res
           .status(400)
           .json({ error: "Missing required fields: chapter, title, images" });

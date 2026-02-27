@@ -62,11 +62,16 @@ GET  /health  # Status de l'API
 ### Mangas
 
 ```bash
-GET  /api/mangas/:title        # Récupérer un manga par titre
-GET  /api/mangas/site/:site    # Liste des mangas par site
-GET  /api/mangas/:title/scans  # Liste des scans d'un manga
-POST /api/mangas               # Créer un manga
-POST /api/mangas/:title/scans  # Ajouter un scan
+GET    /health
+GET    /api/mangas
+GET    /api/mangas/:title
+GET    /api/mangas/site/:site
+GET    /api/mangas/:title/scans
+POST   /api/mangas
+POST   /api/mangas/:title/scans
+POST   /api/scraping/add-manga
+POST   /api/scraping/update-manga
+POST   /api/scraping/update-all
 ```
 
 ### Scraping

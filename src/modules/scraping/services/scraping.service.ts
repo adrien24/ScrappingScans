@@ -41,8 +41,8 @@ export class ScrapingService {
 
             // 3. Trier les chapitres par numéro
             const sortedChapters = chapters.sort((a, b) => {
-                const chA = a.chapter || 0
-                const chB = b.chapter || 0
+                const chA = a.chapter ?? 0
+                const chB = b.chapter ?? 0
                 return chA - chB
             })
 
@@ -162,6 +162,26 @@ export class ScrapingService {
             logger.success('✅ All mangas updated')
         } catch (error) {
             logger.error('Failed to update all mangas', error)
+            throw error
+        }
+    }
+
+    /**
+     * Scraper les titres de tous les mangas disponibles sur AnimeSama
+     */
+    async scrapAllMangasTitlesFromAnimeSama(): Promise<void> {
+        logger.info('Scraping all manga titles from AnimeSama...')
+
+        try {
+            const results = await animeSamaScraper.scrapAllMangasTitles()
+            logger.success(`✅ Scraped manga titles`)
+
+            for (const result of results) {
+                logger.info(`Ensuring manga exists: ${result.title}`)
+                await mangaService.ensureMangaExists(result.title, result.url, SiteSource.ANIME_SAMA)
+            }
+        } catch (error) {
+            logger.error('Failed to scrape manga titles', error)
             throw error
         }
     }

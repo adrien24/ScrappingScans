@@ -17,7 +17,8 @@
     "update": "tsx src/scripts/update-manga/updateAnimeSama.script.ts",
     "addNewManga": "tsx src/scripts/add-manga/animeSama.script.ts",
     "prettier": "prettier --write .",
-    "type-check": "echo \"tsc $(vue-tsc --version)\" && vue-tsc --build --force"
+    "type-check": "echo \"tsc $(vue-tsc --version)\" && vue-tsc --build --force",
+    "logs:trim": "bash scripts/trim-logs.sh"
   },
   "keywords": [],
   "author": "",
@@ -42,11 +43,11 @@
     "@prisma/adapter-pg": "^6.0.0",
     "@prisma/client": "^6.0.0",
     "@supabase/supabase-js": "^2.49.4",
-    "@vitalets/google-translate-api": "^9.2.1",
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
+    "deepl-node": "^1.24.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",

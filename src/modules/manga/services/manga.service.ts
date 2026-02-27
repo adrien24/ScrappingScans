@@ -13,7 +13,7 @@ import {
   Chapter,
 } from "../../../shared/types";
 import { Logger, formatDateISO } from "../../../shared/utils";
-import { translate } from "@vitalets/google-translate-api";
+import * as deepl from "deepl-node";
 
 const logger = new Logger("MangaService");
 
@@ -76,13 +76,11 @@ export class MangaService {
     // Traduire la description
     let description = malData.synopsis.split("[Written by MAL Rewrite]")[0];
     try {
-      const translation = await translate(description, {
-        from: "en",
-        to: "fr",
-      });
-      description = translation.text;
-    } catch (error) {
-      logger.warn("Translation failed, using original description");
+      const translator = new deepl.Translator(process.env.DEEPL_API_KEY!);
+      const result = await translator.translateText(description, "en", "fr");
+      description = result.text;
+    } catch (error: any) {
+      logger.warn(`Translation failed (${error?.message ?? error}), using original description`);
     }
 
     // Mapper les auteurs
@@ -94,7 +92,7 @@ export class MangaService {
       },
       role: author.role,
     }));
-
+    
     // Créer le manga
     const manga: Partial<Manga> = {
       title,

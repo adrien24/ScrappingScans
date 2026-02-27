@@ -76,7 +76,7 @@ export class AnimeSamaScraper {
               ? null
               : firstLine.match(/^\s*(\d+(?:\.\d+)?)\s*$/);
 
-            const chapterStr = (mStrict?.[1] ?? mLoose?.[1]) || null;
+            const chapterStr = (mStrict?.[1] ?? mLoose?.[1]) ?? null;
             let chapter = null;
 
             if (chapterStr) {
@@ -168,6 +168,51 @@ export class AnimeSamaScraper {
       return imageUrls.filter((src): src is string => src !== null);
     } catch (error) {
       logger.error(`Error scraping chapter images: ${chapterTitle}`, error);
+      throw error;
+    } finally {
+      await browser.close();
+    }
+  }
+
+  async scrapAllMangasTitles(): Promise<Array<Record<string,string>>> {
+    logger.info("Scraping all manga titles from AnimeSama");
+    const url = "https://anime-sama.tv/catalogue/?type%5B%5D=Scans&langue%5B%5D=VF&page=";
+
+    const browser = await puppeteer.launch(puppeteerConfig);
+    const page = await browser.newPage();
+
+    try {
+      await configurePage(page, config.scraping.userAgent);
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: 60000,
+      });
+
+      logger.info("Waiting for Cloudflare validation...");
+
+       await page.waitForSelector("#sousBlocMiddle", { timeout: 30000 });
+
+       console.log('page loaded');
+       
+
+       const rawMangas = await page.$$eval(
+        "#list_catalog .catalog-card",
+        (options) => {
+          console.log(options);
+          return options.map((option) => {
+            const title = option.querySelector(".card-title")?.textContent?.trim() || "Unknown Title";
+            const url = option.querySelector("a")?.getAttribute("href") || "";
+            // si le dernier charactère n'est pas un slash, on l'ajoute pour éviter les problèmes de concaténation
+            const formattedUrl = url.endsWith("/") ? url : `${url}/`;
+            return { title: title, url: `${formattedUrl}scan/vf` };
+          });
+        });
+        console.log(rawMangas);
+        
+       return rawMangas;
+
+    } catch (error) {
+      logger.error("Error scraping chapters", error);
       throw error;
     } finally {
       await browser.close();

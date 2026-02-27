@@ -16,4 +16,6 @@ router.post('/update-manga', (req, res) => scrapingController.updateManga(req, r
 // Mettre à jour tous les mangas
 router.post('/update-all', (req, res) => scrapingController.updateAllMangas(req, res))
 
+router.post('/scapping-mangas-titles', (req, res) => scrapingController.scrapAllMangasTitles(req, res))
+
 export default router

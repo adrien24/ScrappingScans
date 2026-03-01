@@ -16,6 +16,7 @@ const logger = new Logger("AnimeSamaScraper");
  */
 export class AnimeSamaScraper {
   private static instance: AnimeSamaScraper;
+  private activeBrowsers: Set<Browser> = new Set();
 
   private constructor() {}
 
@@ -33,6 +34,7 @@ export class AnimeSamaScraper {
     logger.info(`Scraping chapters from: ${url}`);
 
     const browser = await puppeteer.launch(puppeteerConfig);
+    this.activeBrowsers.add(browser);
     const page = await browser.newPage();
 
     try {
@@ -110,6 +112,7 @@ export class AnimeSamaScraper {
       logger.error("Error scraping chapters", error);
       throw error;
     } finally {
+      this.activeBrowsers.delete(browser);
       await browser.close();
     }
   }
@@ -124,6 +127,7 @@ export class AnimeSamaScraper {
     logger.info(`Scraping images for chapter: ${chapterTitle}`);
 
     const browser = await puppeteer.launch(puppeteerConfig);
+    this.activeBrowsers.add(browser);
     const page = await browser.newPage();
 
     try {
@@ -170,6 +174,7 @@ export class AnimeSamaScraper {
       logger.error(`Error scraping chapter images: ${chapterTitle}`, error);
       throw error;
     } finally {
+      this.activeBrowsers.delete(browser);
       await browser.close();
     }
   }
@@ -179,6 +184,7 @@ export class AnimeSamaScraper {
     const url = "https://anime-sama.tv/catalogue/?type%5B%5D=Scans&langue%5B%5D=VF&page=";
 
     const browser = await puppeteer.launch(puppeteerConfig);
+    this.activeBrowsers.add(browser);
     const page = await browser.newPage();
 
     try {
@@ -215,7 +221,20 @@ export class AnimeSamaScraper {
       logger.error("Error scraping chapters", error);
       throw error;
     } finally {
+      this.activeBrowsers.delete(browser);
       await browser.close();
+    }
+  }
+
+  /**
+   * Ferme tous les browsers actifs (appelé lors du shutdown)
+   */
+  async closeAllBrowsers(): Promise<void> {
+    const browsers = Array.from(this.activeBrowsers);
+    if (browsers.length > 0) {
+      logger.info(`Closing ${browsers.length} active browser(s)...`);
+      await Promise.allSettled(browsers.map((b) => b.close()));
+      this.activeBrowsers.clear();
     }
   }
 }

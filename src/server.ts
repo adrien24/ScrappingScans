@@ -2,11 +2,14 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import { readdir, rm } from "fs/promises";
+import { join } from "path";
 import { config } from "./shared/config";
 import { prismaDatabaseClient } from "./core/database/prisma.client";
 import { Logger } from "./shared/utils";
 import mangaRoutes from "./api/routes/manga.routes";
 import scrapingRoutes from "./api/routes/scraping.routes";
+import { animeSamaScraper } from "./modules/scraping/scrapers/animeSama.scraper";
 
 const logger = new Logger("Server");
 
@@ -91,6 +94,9 @@ class Server {
    */
   async start(): Promise<void> {
     try {
+      // Nettoyer les profils Puppeteer orphelins du précédent démarrage
+      await cleanupPuppeteerTmpDirs();
+
       // Connecter à la base de données
       await prismaDatabaseClient.connect();
       logger.success("Database connected");
@@ -126,17 +132,42 @@ class Server {
   }
 }
 
+/**
+ * Supprime les profils temporaires Puppeteer orphelins dans /tmp
+ */
+async function cleanupPuppeteerTmpDirs(): Promise<void> {
+  try {
+    const entries = await readdir("/tmp");
+    const toDelete = entries.filter(
+      (e) =>
+        e.startsWith("puppeteer_dev_profile-") ||
+        e.startsWith("puppeteer_dev_chrome_profile-"),
+    );
+    if (toDelete.length === 0) return;
+    await Promise.allSettled(
+      toDelete.map((dir) =>
+        rm(join("/tmp", dir), { recursive: true, force: true }),
+      ),
+    );
+    logger.info(`Cleaned up ${toDelete.length} leftover Puppeteer temp dir(s)`);
+  } catch (err) {
+    logger.error("Failed to cleanup Puppeteer tmp dirs", err);
+  }
+}
+
 // Gestion des signaux d'arrêt
 const server = new Server();
 
 process.on("SIGTERM", async () => {
   logger.info("SIGTERM received, shutting down gracefully");
+  await animeSamaScraper.closeAllBrowsers();
   await server.stop();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
   logger.info("SIGINT received, shutting down gracefully");
+  await animeSamaScraper.closeAllBrowsers();
   await server.stop();
   process.exit(0);
 });

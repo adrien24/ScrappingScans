@@ -111,12 +111,15 @@ export class MangaController {
       }
 
       const chapters = await mangaService.getMangaChapters(manga.id!);
+      if(!chapters) return;
+
+      const sortedChapters = chapters.sort((a, b) => a.id! - b.id!);
 
       res.json({
         manga: title,
-        count: chapters ? chapters.length : 0,
+        count: sortedChapters ? sortedChapters.length : 0,
         status: manga.status,
-        chapters,
+        chapters: sortedChapters,
       });
     } catch (error) {
       logger.error("Error getting manga chapters", error);

@@ -28,6 +28,9 @@ router.get("/:title/chapters", (req, res) =>
   mangaController.getMangaChapter(req, res),
 );
 
+// Récupérer plusieurs mangas par leurs titres
+router.post("/bulk", (req, res) => mangaController.getMangasByTitles(req, res));
+
 // Créer un manga
 router.post("/", (req, res) => mangaController.createManga(req, res));
 

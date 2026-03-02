@@ -29,8 +29,8 @@ export class MangaRepositoryPrisma implements IMangaRepository {
 
   async findByTitle(title: string): Promise<Manga | null> {
     try {
-      const manga = await prisma.manga.findUnique({
-        where: { title },
+      const manga = await prisma.manga.findFirst({
+        where: { title: { equals: title, mode: "insensitive" } },
       });
 
       if (!manga) return null;

@@ -128,6 +128,33 @@ export class MangaController {
   }
 
   /**
+   * POST /api/mangas/bulk
+   * Récupérer plusieurs mangas par leurs titres
+   */
+  async getMangasByTitles(req: Request, res: Response): Promise<void> {
+    try {
+      const { titles } = req.body;
+
+      if (!Array.isArray(titles) || titles.length === 0) {
+        res
+          .status(400)
+          .json({ error: "Missing or invalid field: titles must be a non-empty array of strings" });
+        return;
+      }
+
+      const mangas = await mangaService.getMangasByTitles(titles);
+
+      res.json({
+        count: mangas.length,
+        data: mangas,
+      });
+    } catch (error) {
+      logger.error("Error getting mangas by titles", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+
+  /**
    * POST /api/mangas
    * Créer un manga manuellement
    */

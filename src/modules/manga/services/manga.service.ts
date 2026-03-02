@@ -54,6 +54,16 @@ export class MangaService {
   }
 
   /**
+   * Obtenir plusieurs mangas par leurs titres
+   */
+  async getMangasByTitles(titles: string[]): Promise<Manga[]> {
+    const results = await Promise.all(
+      titles.map((title) => mangaRepository.findByTitle(title)),
+    );
+    return results.filter((manga): manga is Manga => manga !== null);
+  }
+
+  /**
    * Vérifier si un manga existe
    */
   async mangaExists(title: string): Promise<boolean> {

@@ -164,7 +164,7 @@ export class AnimeSamaScraper {
 
       const imageUrls = await page.$$eval("#scansPlacement img", (imgs) =>
         imgs
-          .map((img) => `https://anime-sama.tv${img.getAttribute("src")}`)
+          .map((img) => `${img.getAttribute("src")}`)
           .filter((src) => src && !src.includes("readerarea.svg")),
       );
 
@@ -181,7 +181,7 @@ export class AnimeSamaScraper {
 
   async scrapAllMangasTitles(): Promise<Array<Record<string,string>>> {
     logger.info("Scraping all manga titles from AnimeSama");
-    const url = "https://anime-sama.tv/catalogue/?type%5B%5D=Scans&langue%5B%5D=VF&page=";
+    const url = `${config.sites.animeSama.baseUrl}/catalogue/?type%5B%5D=Scans&langue%5B%5D=VF&page=`;
 
     const browser = await puppeteer.launch(puppeteerConfig);
     this.activeBrowsers.add(browser);

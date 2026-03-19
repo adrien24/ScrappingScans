@@ -7,13 +7,6 @@ dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
  * Configuration centralisée de l'application
  */
 export const config = {
-  // Database
-  supabase: {
-    url: process.env.SUPABASE_URL || "",
-    key: process.env.SUPABASE_KEY || "",
-    email: process.env.SUPABASE_EMAIL || "",
-    password: process.env.SUPABASE_PASSWORD || "",
-  },
 
   // External APIs
   myAnimeList: {
@@ -33,8 +26,8 @@ export const config = {
   // Sites
   sites: {
     animeSama: {
-      baseUrl: "https://anime-sama.tv",
-      catalogueUrl: "https://anime-sama.tv/catalogue",
+      baseUrl: process.env.ANIME_SAMA_BASE_URL || "",
+      catalogueUrl: `${process.env.ANIME_SAMA_BASE_URL || "https://anime-sama.to"}/catalogue`,
     },
     lelmanga: {
       baseUrl: "https://lelmanga.com",

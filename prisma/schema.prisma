@@ -47,4 +47,18 @@ model Scan {
   @@index([scanId])
   @@index([chapter])
 }
+
+model DomainTest {
+  id          Int      @id @default(autoincrement())
+  domain      String   @unique
+  extension   String
+  isWorking   Boolean  @map("is_working")
+  statusCode  Int?     @map("status_code")
+  responseTime Int?    @map("response_time")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("DomainTests")
+  @@index([isWorking])
+  @@index([extension])
+}
 // Force refresh

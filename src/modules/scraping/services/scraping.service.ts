@@ -2,6 +2,7 @@ import { animeSamaScraper } from '../scrapers/animeSama.scraper'
 import { mangaService } from '../../manga/services'
 import { SiteSource, ScrapedChapter, CreateScanDTO } from '../../../shared/types'
 import { Logger } from '../../../shared/utils'
+import { config } from '../../../shared/config'
 
 const logger = new Logger('ScrapingService')
 
@@ -151,7 +152,7 @@ export class ScrapingService {
 
             for (const manga of mangas) {
                 try {
-                    await this.updateMangaFromAnimeSama(manga.title, manga.linkManga)
+                    await this.updateMangaFromAnimeSama(manga.title, `${config.sites.animeSama.baseUrl}${manga.linkManga}`)
                 } catch (error) {
                     logger.error(`Failed to update ${manga.title}`, error)
                     // Continue avec le manga suivant

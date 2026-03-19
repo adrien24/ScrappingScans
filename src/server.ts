@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
+import rateLimit from "express-rate-limit";
 import { readdir, rm } from "fs/promises";
 import { join } from "path";
 import { config } from "./shared/config";
@@ -9,6 +10,7 @@ import { prismaDatabaseClient } from "./core/database/prisma.client";
 import { Logger } from "./shared/utils";
 import mangaRoutes from "./api/routes/manga.routes";
 import scrapingRoutes from "./api/routes/scraping.routes";
+import domainTestRoutes from "./api/routes/domain-test.routes";
 import { animeSamaScraper } from "./modules/scraping/scrapers/animeSama.scraper";
 
 const logger = new Logger("Server");
@@ -46,9 +48,33 @@ class Server {
     this.app.use(express.json({ limit: "10mb" }));
     this.app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-    // Logging middleware
+    // Rate limiting — global
+    const globalLimiter = rateLimit({
+      windowMs: 1 * 60 * 1000, // 1 minute
+      max: 100,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: { error: "Too many requests, please try again later." },
+    });
+    this.app.use(globalLimiter);
+
+    // Rate limiting — routes de scraping (plus strict)
+    const scrapingLimiter = rateLimit({
+      windowMs: 1 * 60 * 1000, // 1 minute
+      max: 5,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: { error: "Too many scraping requests, please try again later." },
+    });
+    this.app.use("/api/scraping", scrapingLimiter);
+
+    // Logging middleware — ignore les routes inconnues (bots/scans)
     this.app.use((req, res, next) => {
-      logger.info(`${req.method} ${req.path}`);
+      const knownPrefixes = ["/api/", "/health"];
+      const isKnown = knownPrefixes.some((prefix) => req.path.startsWith(prefix));
+      if (isKnown) {
+        logger.info(`${req.method} ${req.path}`);
+      }
       next();
     });
   }
@@ -69,6 +95,7 @@ class Server {
     // API routes
     this.app.use("/api/mangas", mangaRoutes);
     this.app.use("/api/scraping", scrapingRoutes);
+    this.app.use("/api/domain-test", domainTestRoutes);
 
     // 404 handler
     this.app.use((req: Request, res: Response) => {

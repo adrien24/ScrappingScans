@@ -86,7 +86,7 @@ POST /api/scraping/update-manga # Mettre à jour un manga
 ```bash
 curl -X POST http://localhost:3000/api/scraping/add-manga \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://anime-sama.tv/catalogue/kagura-bachi/scan/vf.html"}'
+  -d '{"url": "https://anime-sama.to/catalogue/kagura-bachi/scan/vf.html"}'
 ```
 
 ---
@@ -167,7 +167,7 @@ ScrappingScan/
 
 ### Scraping et Cloudflare
 
-Le site anime-sama.tv utilise **Cloudflare**. Le scraping peut :
+Le site anime-sama utilise **Cloudflare**. Le scraping peut :
 
 - Prendre du temps (validation Cloudflare)
 - Échouer si bloqué par l'anti-bot
